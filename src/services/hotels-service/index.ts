@@ -5,12 +5,10 @@ import { notFoundError } from "@/errors";
 import { cannotListHotelsError } from "@/errors/cannot-list-hotels-error";
 
 async function listHotels(userId: number) {
-  //Tem enrollment?
   const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
   if (!enrollment) {
     throw notFoundError();
   }
-  //Tem ticket pago isOnline false e includesHotel true
   const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
 
   if (!ticket || ticket.status === "RESERVED" || ticket.TicketType.isRemote || !ticket.TicketType.includesHotel) {
@@ -35,9 +33,11 @@ async function getHotelsWithRooms(userId: number, hotelId: number) {
   return hotel;
 }
 
+
 const hotelService = {
   getHotels,
   getHotelsWithRooms,
+  listHotels
 };
 
 export default hotelService;
